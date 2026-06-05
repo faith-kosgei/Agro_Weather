@@ -67,7 +67,9 @@ export async function getForecast(
   const { data } = await client.get<WeatherAIForecastResponse>("/v1/forecast", {
     params: { lat, lon, days: cappedDays, ai: false },
   });
+  logger.info({ forecastTopLevelKeys: Object.keys(data as object) }, "WeatherAI forecast response shape");
   return data;
+ 
 }
 
 export async function getUsage(): Promise<WeatherAIUsageResponse> {

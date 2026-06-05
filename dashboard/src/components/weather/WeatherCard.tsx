@@ -15,6 +15,7 @@ export function WeatherCard({ weather, loading }: Props) {
 
   if (!weather) return null;
   const { current } = weather;
+  const uvIndex = current?.uv_index;
 
   const stats = [
     {
@@ -44,8 +45,8 @@ export function WeatherCard({ weather, loading }: Props) {
     {
       icon: Sun,
       label: "UV Index",
-      value: current.uv_index.toString(),
-      sub: uvLabel(current.uv_index),
+      value: uvIndex != null ? uvIndex.toString() : "N/A",
+      sub: uvIndex != null ? uvLabel(uvIndex) : "No UV data",
       color: "text-yellow-400",
       bg: "bg-yellow-500/10 border-yellow-500/20",
     },

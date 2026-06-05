@@ -5,7 +5,7 @@ import { getCurrentWeather, getForecast } from "../services/weatherClient";
 import { getCachedWeather, setCachedWeather } from "../services/cache";
 import { generateAdvisory } from "../services/advisory";
 import { logger } from "../services/logger";
-import type { WeatherAICurrentResponse, WeatherAIForecastResponse } from "../types";
+import type { WeatherAICurrentResponse, WeatherAIForecastResponse, WeatherAIForecastDay } from "../types";
 
 export const farmsRouter = Router();
 
@@ -143,20 +143,31 @@ farmsRouter.get(
       const farm = await prisma.farm.findUnique({ where: { id: req.params.id } });
       if (!farm) { res.status(404).json({ error: "Farm not found" }); return; }
 
-      // Reuse cached forecast if available
       let forecastData = await getCachedWeather<WeatherAIForecastResponse>(farm.id, "forecast");
       if (!forecastData) {
         forecastData = await getForecast(farm.lat, farm.lon, 7);
         await setCachedWeather(farm.id, "forecast", forecastData);
       }
 
-      const advisory = generateAdvisory(
-        farm.id,
-        farm.name,
-        farm.cropType,
-        forecastData.forecast
-      );
+      // Log the actual keys WeatherAI returned
+      const raw = forecastData as unknown as Record<string, unknown>;
+      logger.info({ forecastTopLevelKeys: Object.keys(raw) }, "WeatherAI forecast shape");
 
+      const days = (
+        raw.forecast ?? raw.data ?? raw.daily ?? raw.forecasts ?? raw.weather ?? []
+      ) as WeatherAIForecastDay[];
+
+      if (!Array.isArray(days) || days.length === 0) {
+        logger.warn({ forecastKeys: Object.keys(raw) }, "Unexpected forecast shape");
+        res.status(502).json({
+          error: "Unexpected forecast response from upstream API",
+          code: "UPSTREAM_SHAPE_MISMATCH",
+          receivedKeys: Object.keys(raw),
+        });
+        return;
+      }
+
+      const advisory = generateAdvisory(farm.id, farm.name, farm.cropType, days);
       logger.info({ farmId: farm.id }, "Advisory generated");
       res.json(advisory);
     } catch (err) {

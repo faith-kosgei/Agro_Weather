@@ -9,7 +9,7 @@ interface Props { forecast: ForecastResponse | null; loading: boolean; }
 
 export function ForecastChart({ forecast, loading }: Props) {
   if (loading) return <div className="skeleton h-72 rounded-xl" />;
-  if (!forecast) return null;
+  if (!forecast?.forecast || !Array.isArray(forecast.forecast)) return null;
 
   const data = forecast.forecast.map((d) => ({
     day: new Date(d.date).toLocaleDateString("en-KE", { weekday: "short", day: "numeric" }),
