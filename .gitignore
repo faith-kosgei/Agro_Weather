@@ -1,0 +1,9 @@
+node_modules/
+api/node_modules/
+api/dist/
+dashboard/node_modules/
+dashboard/.next/
+.env
+api/.env
+dashboard/.env.local
+*.log

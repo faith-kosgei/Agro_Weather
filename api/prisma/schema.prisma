@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Farm {
+  id        String   @id @default(cuid())
+  name      String
+  lat       Float
+  lon       Float
+  cropType  String?
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  weatherCache WeatherCache[]
+
+  @@map("farms")
+}
+
+model WeatherCache {
+  id        String   @id @default(cuid())
+  farmId    String
+  type      String   // "current" | "forecast"
+  data      Json
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime
+
+  farm Farm @relation(fields: [farmId], references: [id], onDelete: Cascade)
+
+  @@unique([farmId, type])
+  @@map("weather_cache")
+}
