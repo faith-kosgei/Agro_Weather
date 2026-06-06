@@ -23,12 +23,6 @@ app.use((req, _res, next) => {
 app.use("/health", healthRouter);
 app.use("/farms", farmsRouter);
 
-app.get("/", (_req, res) => {
-  res.json({
-    status: "ok",
-    message: "Agro-Weather API running"
-  });
-});
 
 // 404
 app.use((_req, res) => {
