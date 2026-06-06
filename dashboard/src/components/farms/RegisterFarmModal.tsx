@@ -50,10 +50,9 @@ export function RegisterFarmModal({ onClose, onSubmit }: Props) {
       setLoading(false);
     }
   };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-[#111d14] border border-canopy-700/40 rounded-2xl shadow-2xl p-6 animate-fade-up">
+    <div className="fixed inset-0 z-50 flex  justify-center backdrop-blur-sm items-end sm:items-center bg-black\/60 ">
+      <div className="w-full sm:max-w-md bg-[#111d14] border border-canopy-700\/40 rounded-t-2xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 animate-fade-up max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-display text-lg font-semibold text-earth-300">Register a Farm</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-canopy-700/30 text-canopy-400">
