@@ -37,6 +37,10 @@ app.use((req, _res, next) => {
 app.use("/health", healthRouter);
 app.use("/farms", farmsRouter);
 
+// Root — quick sanity check
+app.get("/", (_req, res) => {
+  res.json({ service: "Agro-Weather Intelligence API", status: "ok", version: "1.0.0" });
+});
 
 // 404
 app.use((_req, res) => {
