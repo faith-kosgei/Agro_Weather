@@ -24,7 +24,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Dashboard runs on `http://localhost:3001` (or 3000 if the API is not running).
+Dashboard runs on `http://localhost:3000` (or 3000 if the API is not running).
 
 ## Features
 

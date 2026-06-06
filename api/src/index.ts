@@ -4,18 +4,14 @@ import { farmsRouter } from "./routes/farms";
 import { healthRouter } from "./routes/health";
 import { errorHandler } from "./middleware/errorHandler";
 import { logger } from "./services/logger";
-import cors from "cors";
+
 
 const app = express();
-const PORT = process.env.PORT ?? 4000;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 
-app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
-}))
+
 
 // Request logging
 app.use((req, _res, next) => {
@@ -26,6 +22,13 @@ app.use((req, _res, next) => {
 // Routes
 app.use("/health", healthRouter);
 app.use("/farms", farmsRouter);
+
+app.get("/", (_req, res) => {
+  res.json({
+    status: "ok",
+    message: "Agro-Weather API running"
+  });
+});
 
 // 404
 app.use((_req, res) => {
@@ -38,5 +41,6 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   logger.info({ port: PORT }, "Agro-Weather API running");
 });
+
 
 export { app };
